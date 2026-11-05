@@ -5,8 +5,8 @@
 class DeskUndo < Formula
   desc "Menu bar posture coach that tells you how to move your screen and desk"
   homepage "https://github.com/marcellovictorino/desk-undo"
-  url "https://github.com/marcellovictorino/desk-undo/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "7d3c247f1b64cd826b575d18ec041b3f957b279f77a283c6e2c1bc6f85109fb4" # checksum: set by the updater
+  url "https://github.com/marcellovictorino/desk-undo/archive/refs/tags/v0.1.1.tar.gz"
+  sha256 "d1182344d55e40829c08dfdd0daf1659937919cd1b3b8bcb4a64de7cd8833000" # checksum: set by the updater
   license "MIT"
   head "https://github.com/marcellovictorino/desk-undo.git", branch: "main"
 
