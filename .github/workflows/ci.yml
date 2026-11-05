@@ -1,0 +1,19 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  tap:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Updater script test
+        run: .github/scripts/test-update-formulas.sh
+      # Audits every formula and builds and tests those with a released
+      # checksum; a formula still on the pending placeholder (first release not
+      # tagged) is audited only.
+      - name: Check formulas
+        run: .github/scripts/check-formulas.sh
