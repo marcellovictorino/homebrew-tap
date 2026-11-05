@@ -22,14 +22,7 @@ jobs:
         run: .github/scripts/update-formulas.sh
       - name: Prove the updated formulas build
         if: steps.update.outputs.changed == '1'
-        run: |
-          brew tap marcellovictorino/tap "$GITHUB_WORKSPACE"
-          for f in $(git diff --name-only -- Formula); do
-            name=marcellovictorino/tap/$(basename "$f" .rb)
-            brew audit --strict "$name"
-            brew install --build-from-source "$name"
-            brew test "$name"
-          done
+        run: .github/scripts/git diff --name-only -z -- Formula | xargs -0 .github/scripts/check-formulas.sh
       - name: Commit
         if: steps.update.outputs.changed == '1'
         run: |

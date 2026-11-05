@@ -11,12 +11,19 @@ set -euo pipefail
 dir=${1:-Formula}
 zeros=0000000000000000000000000000000000000000000000000000000000000000
 changed=0
+err=$(mktemp)
+trap 'rm -f "$err"' EXIT
 
 for formula in "$dir"/*.rb; do
   repo=$(sed -n 's/^# updater: \([A-Za-z0-9_.-]*\/[A-Za-z0-9_.-]*\)$/\1/p' "$formula" | head -n1)
   [ -n "$repo" ] || { echo "skip $formula: no updater marker"; continue; }
 
-  tag=$(gh release view --repo "$repo" --json tagName --jq .tagName 2>/dev/null || true)
+  # Only "release not found" means no release; any other failure (auth, rate
+  # limit, network) must fail the run rather than look like "nothing to do".
+  if ! tag=$(gh release view --repo "$repo" --json tagName --jq .tagName 2>"$err"); then
+    grep -qi 'release not found' "$err" || { echo "error: cannot read releases of $repo: $(cat "$err")" >&2; exit 1; }
+    tag=
+  fi
   [ -n "$tag" ] || { echo "skip $formula: $repo has no release"; continue; }
   case $tag in v[0-9]*) ;; *) echo "skip $formula: unexpected tag $tag"; continue ;; esac
   latest=${tag#v}

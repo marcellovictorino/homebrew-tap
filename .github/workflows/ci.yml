@@ -12,7 +12,8 @@ jobs:
       - uses: actions/checkout@v7
       - name: Updater script test
         run: .github/scripts/test-update-formulas.sh
-      - name: Audit formulas
-        run: |
-          brew tap marcellovictorino/tap "$GITHUB_WORKSPACE"
-          brew audit --strict --tap marcellovictorino/tap
+      # Audits every formula and builds and tests those with a released
+      # checksum; a formula still on the pending placeholder (first release not
+      # tagged) is audited only.
+      - name: Check formulas
+        run: .github/scripts/check-formulas.sh

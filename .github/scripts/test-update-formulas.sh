@@ -12,7 +12,8 @@ case "$*" in
   "release view --repo o/new "*)   echo v0.6.0 ;;
   "release view --repo o/same "*)  echo v0.5.0 ;;
   "release view --repo o/older "*) echo v0.4.0 ;;
-  "release view --repo o/none "*)  exit 1 ;;
+  "release view --repo o/none "*)  echo "release not found" >&2; exit 1 ;;
+  "release view --repo o/broken "*) echo "HTTP 401: Bad credentials" >&2; exit 1 ;;
   "api repos/o/new/commits/v0.6.0 "*)  echo aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ;;
   "api repos/o/same/commits/v0.5.0 "*) echo bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb ;;
   *) echo "unexpected gh $*" >&2; exit 2 ;;
@@ -59,4 +60,8 @@ for f in same older none manual; do
   cmp -s "$work/Formula/$f.rb" "$work/before/$f.rb" || fail "$f: changed but should not"
 done
 echo "$out" | grep -q '^changed=1$' || fail "changed output"
+# A failed lookup must fail the run, not read as "no release".
+mkdir "$work/broken"; mk() { :; }
+printf '# updater: o/broken\nurl "https://github.com/o/broken/archive/refs/tags/v0.1.0.tar.gz"\nsha256 "%s"\n' "$old" > "$work/broken/b.rb"
+if PATH="$work/bin:$PATH" "$here/update-formulas.sh" "$work/broken" >/dev/null 2>&1; then fail "broken lookup treated as success"; fi
 echo "PASS"
