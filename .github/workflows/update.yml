@@ -22,7 +22,7 @@ jobs:
         run: .github/scripts/update-formulas.sh
       - name: Prove the updated formulas build
         if: steps.update.outputs.changed == '1'
-        run: .github/scripts/git diff --name-only -z -- Formula | xargs -0 .github/scripts/check-formulas.sh
+        run: git diff --name-only -z -- Formula | xargs -0 .github/scripts/check-formulas.sh
       - name: Commit
         if: steps.update.outputs.changed == '1'
         run: |

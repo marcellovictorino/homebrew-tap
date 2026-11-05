@@ -15,12 +15,38 @@ files=("$@")
 
 for f in "${files[@]}"; do [ -f "$f" ] || { echo "error: $f not found" >&2; exit 1; }; done
 
+# Never touch an installation that is not ours: a pill the person installed
+# from the real tap must survive. Refuse before changing anything.
+for f in "${files[@]}"; do
+  n=$(basename "$f" .rb)
+  if [ -n "$(brew list --formula --versions "$n" 2>/dev/null)" ]; then
+    echo "error: $n is already installed; refusing to replace or remove it" >&2
+    exit 1
+  fi
+done
+
 brew tap-new --no-git "$tap" >/dev/null
 dir=$(brew --repo "$tap")
-installed=()
+installed=() # only names verified absent above, installed by this run
 cleanup() {
-  [ ${#installed[@]} -eq 0 ] || brew uninstall --force "${installed[@]}" >/dev/null 2>&1 || true
-  brew untap "$tap" >/dev/null 2>&1 || true
+  local rc=$? failed=0 n
+  trap - EXIT
+  for n in ${installed[@]+"${installed[@]}"}; do
+    brew uninstall --force "$n" || failed=1
+    if [ -n "$(brew list --formula --versions "$n" 2>/dev/null)" ]; then
+      echo "cleanup error: $n is still installed" >&2; failed=1
+    else
+      echo "cleanup verified: $n not installed"
+    fi
+  done
+  brew untap "$tap" || failed=1
+  if brew tap | grep -qx "$tap"; then
+    echo "cleanup error: tap $tap still present" >&2; failed=1
+  else
+    echo "cleanup verified: tap $tap absent"
+  fi
+  [ $failed -eq 0 ] || rc=1
+  exit $rc
 }
 trap cleanup EXIT
 mkdir -p "$dir/Formula"
