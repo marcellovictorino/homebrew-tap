@@ -4,13 +4,13 @@ class Pill < Formula
   homepage "https://github.com/marcellovictorino/pill"
   # Release v0.5.0 is not tagged yet. Until it is, sha256 and COMMIT below are
   # placeholders (all zeros). The tap's updater fills both in once the tag exists.
-  url "https://github.com/marcellovictorino/pill/archive/refs/tags/v0.5.0.tar.gz"
-  sha256 "c8ae582a3a3ed45894bf013f245b595cff05becf2bf75b8715625e4f708e8a0e" # checksum: set by the updater
+  url "https://github.com/marcellovictorino/pill/archive/refs/tags/v0.6.0.tar.gz"
+  sha256 "a5971d9347d65859e5f06cb3a7a0ff6e227032832d074497907e5689bee1a256" # checksum: set by the updater
   license "MIT"
   head "https://github.com/marcellovictorino/pill.git", branch: "main"
 
   # The tag's commit. A source archive has no Git data, so it is stamped in.
-  COMMIT = "4edbdc4abd4d8d2c5b02f082dadfb8b1a066bd98".freeze # commit: set by the updater
+  COMMIT = "d840d8f4682e15badccf368de64759564800307d".freeze # commit: set by the updater
 
   depends_on "go" => :build
   depends_on "llama.cpp"
