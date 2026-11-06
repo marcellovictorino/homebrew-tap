@@ -10,6 +10,14 @@ set -euo pipefail
 here=$(cd "$(dirname "$0")" && pwd)
 [ $# -gt 0 ] || set -- Formula/*.rb
 
+# A failed formula is restored from the last commit and a good one is committed
+# whole, so an edit already in the working copy would be lost or published.
+if [ -n "$(git status --porcelain -- "$@")" ]; then
+  echo "error: uncommitted changes to the formulas; commit or set them aside first:" >&2
+  git status --short -- "$@" >&2
+  exit 1
+fi
+
 failed=()
 for f in "$@"; do
   name=$(basename "$f" .rb)

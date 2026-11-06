@@ -82,6 +82,14 @@ done
 [ -z "$(git status --porcelain)" ] || fail "working copy not clean: $(git status --porcelain)"
 echo "$out" | grep -q '^error: not updated: badbuild broken$' || fail "failures not named"
 
+# An edit already in the working copy is neither discarded nor published.
+echo "# local edit" >> Formula/same.rb
+head=$(git rev-parse HEAD)
+if "$here/update-tap.sh" >/dev/null 2>&1; then fail "run with an uncommitted formula edit exited 0"; fi
+grep -q '^# local edit$' Formula/same.rb || fail "uncommitted edit discarded"
+[ "$(git rev-parse HEAD)" = "$head" ] || fail "committed despite an uncommitted edit"
+git checkout -q -- Formula/same.rb
+
 # A formula for a release not yet tagged (all-zero checksum) fails the check
 # before Homebrew is touched.
 : > "$work/brew.log"
