@@ -2,8 +2,6 @@
 class Pill < Formula
   desc "Run the Pi coding agent with local models served by llama.cpp"
   homepage "https://github.com/marcellovictorino/pill"
-  # Release v0.5.0 is not tagged yet. Until it is, sha256 and COMMIT below are
-  # placeholders (all zeros). The tap's updater fills both in once the tag exists.
   url "https://github.com/marcellovictorino/pill/archive/refs/tags/v0.6.0.tar.gz"
   sha256 "a5971d9347d65859e5f06cb3a7a0ff6e227032832d074497907e5689bee1a256" # checksum: set by the updater
   license "MIT"

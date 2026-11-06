@@ -12,8 +12,9 @@ jobs:
       - uses: actions/checkout@v7
       - name: Updater script test
         run: .github/scripts/test-update-formulas.sh
-      # Audits every formula and builds and tests those with a released
-      # checksum; a formula still on the pending placeholder (first release not
-      # tagged) is audited only.
+      - name: Per-formula updater test
+        run: .github/scripts/test-update-tap.sh
+      # Audits, builds and tests every formula; fails on a formula whose release
+      # is not tagged yet (all-zero placeholder checksum).
       - name: Check formulas
         run: .github/scripts/check-formulas.sh

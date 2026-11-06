@@ -4,8 +4,8 @@
 # `brew tap` clones only committed files, so the formulas are copied into a
 # scratch tap; that way the formula checked is the one on disk, including an
 # uncommitted edit from the updater. Usage: check-formulas.sh [Formula/x.rb ...]
-# (default: every formula). A formula whose checksum is still the all-zero
-# placeholder (release not yet tagged) is audited but not installed or tested.
+# (default: every formula). A formula must point at a release that is already
+# tagged: one still carrying the all-zero placeholder checksum fails here.
 set -euo pipefail
 
 zeros=0000000000000000000000000000000000000000000000000000000000000000
@@ -14,6 +14,15 @@ tap=local/formula-check
 files=("$@")
 
 for f in "${files[@]}"; do [ -f "$f" ] || { echo "error: $f not found" >&2; exit 1; }; done
+
+# Tag the project's release first, then add or bump its formula with that
+# release's url and checksum; a formula for an untagged release cannot build.
+for f in "${files[@]}"; do
+  if grep -q "sha256 \"$zeros\"" "$f"; then
+    echo "error: $f has the all-zero placeholder checksum; tag the project's release first, then set the formula's url and sha256 to it" >&2
+    exit 1
+  fi
+done
 
 # Never touch an installation that is not ours: a pill the person installed
 # from the real tap must survive. Refuse before changing anything.
@@ -58,10 +67,6 @@ for f in "${files[@]}"; do
   name=$tap/$(basename "$f" .rb)
   echo "== audit $name"
   brew audit --strict "$name"
-  if grep -q "sha256 \"$zeros\"" "$f"; then
-    echo "== skip install and test of $name: checksum is the pending placeholder (release not tagged yet)"
-    continue
-  fi
   echo "== install $name"
   installed+=("$(basename "$f" .rb)")
   brew install --build-from-source "$name"

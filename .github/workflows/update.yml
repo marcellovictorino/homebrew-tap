@@ -15,19 +15,13 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Update formulas
-        id: update
+      # Each formula is updated, built and committed on its own, so one that
+      # fails its release lookup or its build does not hold back the others.
+      # The run still ends failed, naming each formula left behind.
+      - name: Update, check and commit each formula
         env:
           GH_TOKEN: ${{ github.token }}
-        run: .github/scripts/update-formulas.sh
-      - name: Prove the updated formulas build
-        if: steps.update.outputs.changed == '1'
-        run: git diff --name-only -z -- Formula | xargs -0 .github/scripts/check-formulas.sh
-      - name: Commit
-        if: steps.update.outputs.changed == '1'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          names=$(git diff --name-only -- Formula | xargs -n1 basename | sed 's/\.rb$//' | paste -sd, -)
-          git commit -am "chore($names): update to the latest release"
-          git push origin HEAD:main
+          .github/scripts/update-tap.sh
