@@ -9,7 +9,7 @@ brew install marcellovictorino/tap/<formula>
 
 | Formula | Project |
 | --- | --- |
-| `desk-undo` | [desk-undo](https://github.com/marcellovictorino/desk-undo): menu bar posture coach that says how to move your screen and desk |
+| `desk-check` | [desk-check](https://github.com/marcellovictorino/desk-check): menu bar posture coach that says how to move your screen and desk |
 | `pill` | [pill](https://github.com/marcellovictorino/pill): run the Pi coding agent with local llama.cpp models |
 
 ## How releases reach the tap

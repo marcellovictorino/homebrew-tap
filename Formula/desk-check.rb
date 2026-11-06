@@ -1,14 +1,14 @@
-# updater: marcellovictorino/desk-undo
-# Desk Undo is built on the person's own Mac during `brew install`, with Apple's
+# updater: marcellovictorino/desk-check
+# Desk Check is built on the person's own Mac during `brew install`, with Apple's
 # command line tools. Built here, it is signed ad hoc for this Mac and opens without
 # a macOS warning, so no Apple developer account is needed.
-class DeskUndo < Formula
+class DeskCheck < Formula
   desc "Menu bar posture coach that tells you how to move your screen and desk"
-  homepage "https://github.com/marcellovictorino/desk-undo"
-  url "https://github.com/marcellovictorino/desk-undo/archive/refs/tags/v0.1.1.tar.gz"
-  sha256 "d1182344d55e40829c08dfdd0daf1659937919cd1b3b8bcb4a64de7cd8833000" # checksum: set by the updater
+  homepage "https://github.com/marcellovictorino/desk-check"
+  url "https://github.com/marcellovictorino/desk-check/archive/refs/tags/v0.2.0.tar.gz"
+  sha256 "0000000000000000000000000000000000000000000000000000000000000000" # checksum: set by the updater
   license "MIT"
-  head "https://github.com/marcellovictorino/desk-undo.git", branch: "main"
+  head "https://github.com/marcellovictorino/desk-check.git", branch: "main"
 
   depends_on arch: :arm64
   depends_on macos: :sonoma
@@ -19,24 +19,24 @@ class DeskUndo < Formula
     ENV["DEVELOPER_DIR"] = MacOS::CLT::PKG_PATH if MacOS::CLT.installed?
     system "scripts/build-app.sh", version.to_s, prefix
     pkgshare.install "Tests/verify-app.sh"
-    (bin/"desk-undo").write <<~SH
+    (bin/"desk-check").write <<~SH
       #!/bin/sh
-      exec open "#{opt_prefix}/DeskUndo.app"
+      exec open "#{opt_prefix}/DeskCheck.app"
     SH
   end
 
   def caveats
     <<~EOS
-      Start Desk Undo with:
-        desk-undo
+      Start Desk Check with:
+        desk-check
       It lives in the menu bar and has no Dock icon.
 
       To find it in Spotlight and Launchpad as well:
-        ln -sf "#{opt_prefix}/DeskUndo.app" ~/Applications/
+        ln -sf "#{opt_prefix}/DeskCheck.app" ~/Applications/
     EOS
   end
 
   test do
-    system pkgshare/"verify-app.sh", prefix/"DeskUndo.app"
+    system pkgshare/"verify-app.sh", prefix/"DeskCheck.app"
   end
 end
