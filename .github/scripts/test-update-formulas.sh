@@ -28,6 +28,7 @@ mk() { # name repo version sha
 class X < Formula
   url "https://github.com/$2/archive/refs/tags/v$3.tar.gz"
   sha256 "$4"
+  revision 1
   COMMIT = "$zc".freeze
 end
 RB
@@ -52,6 +53,8 @@ want=$(printf 'archive bytes for https://github.com/o/new/archive/refs/tags/v0.6
 grep -q "tags/v0.6.0.tar.gz" "$work/Formula/new.rb" || fail "new: url not bumped"
 grep -q "sha256 \"$want\"" "$work/Formula/new.rb" || fail "new: checksum not recomputed"
 grep -q 'COMMIT = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"' "$work/Formula/new.rb" || fail "new: commit not stamped"
+# A revision marks a formula change on the same release; a new release resets it.
+! grep -q 'revision' "$work/Formula/new.rb" || fail "new: revision not removed on a new release"
 for f in same older none manual; do
   cmp -s "$work/Formula/$f.rb" "$work/before/$f.rb" || fail "$f: changed but should not"
 done
