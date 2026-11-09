@@ -4,6 +4,7 @@
 # A formula opts in with a first-lines comment: "# updater: OWNER/REPO".
 # It must use a ".../archive/refs/tags/vX.Y.Z.tar.gz" url and a sha256 line.
 # A "COMMIT = "..."" line, when present, is set to the tag's commit.
+# A "revision N" line is removed: a new release starts again at no revision.
 # Only moves forward. Edits the files in place and commits nothing; exits
 # non-zero on the first formula whose release cannot be read.
 # Needs gh (GH_TOKEN set) and curl.
@@ -48,6 +49,7 @@ for formula in "$@"; do
     -e "s|^\( *url \".*/archive/refs/tags/\)v.*\.tar\.gz\"|\1$tag.tar.gz\"|" \
     -e "s|^\( *sha256 \)\"[0-9a-f]\{64\}\"|\1\"$sum\"|" \
     -e "s|^\( *COMMIT = \)\"[0-9a-f]\{40\}\"|\1\"$commit\"|" \
+    -e '/^ *revision [0-9][0-9]*$/d' \
     "$formula"
   rm -f "$formula.bak"
   echo "bump $formula: $current -> $latest ($commit)"

@@ -8,6 +8,7 @@ class DeskCheck < Formula
   url "https://github.com/marcellovictorino/desk-check/archive/refs/tags/v0.4.0.tar.gz"
   sha256 "a5fa5e1dc05597fe75b76dde1ec6e027651c46b7b48132f066f093cf00f742fe"
   license "MIT"
+  revision 1
   head "https://github.com/marcellovictorino/desk-check.git", branch: "main"
 
   depends_on arch: :arm64
