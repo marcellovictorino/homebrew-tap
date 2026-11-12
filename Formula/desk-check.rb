@@ -1,4 +1,5 @@
 # updater: marcellovictorino/desk-check
+# template: Formula/desk-check.rb
 # Desk Check is built on the person's own Mac during `brew install`, with Apple's
 # command line tools. Built here, it is signed ad hoc for this Mac and opens without
 # a macOS warning, so no Apple developer account is needed.
