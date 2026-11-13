@@ -1,13 +1,17 @@
 # updater: marcellovictorino/desk-check
 # template: Formula/desk-check.rb
+# Desk Check's Homebrew formula has one source: this file in the desk-check repository.
+# The tap (marcellovictorino/homebrew-tap) copies it at each release tag and fills in its own
+# url, sha256 and revision. In desk-check the url and checksum are placeholders; change install,
+# test and caveats in desk-check, never in the tap.
 # Desk Check is built on the person's own Mac during `brew install`, with Apple's
 # command line tools. Built here, it is signed ad hoc for this Mac and opens without
 # a macOS warning, so no Apple developer account is needed.
 class DeskCheck < Formula
   desc "Menu bar posture coach that tells you how to move your screen and desk"
   homepage "https://github.com/marcellovictorino/desk-check"
-  url "https://github.com/marcellovictorino/desk-check/archive/refs/tags/v0.4.1.tar.gz"
-  sha256 "9549e582819db6a40eddda24dc402b68458a75fcfb5673c06d5580b9d9c2070e"
+  url "https://github.com/marcellovictorino/desk-check/archive/refs/tags/v0.5.1.tar.gz"
+  sha256 "a4c9ebbd16c58ae20d6e2616cf0e44dbca644d782f6d6a56986a6c630be5147a"
   license "MIT"
   head "https://github.com/marcellovictorino/desk-check.git", branch: "main"
 
@@ -18,6 +22,14 @@ class DeskCheck < Formula
     # Build with the command line tools when they are installed, as Homebrew itself does,
     # so the result is the same whether or not Xcode is present.
     ENV["DEVELOPER_DIR"] = MacOS::CLT::PKG_PATH if MacOS::CLT.installed?
+    # Desk Check builds in the Swift 6 language mode, which needs Swift 6 (command line tools 16 or later).
+    swift_major = Utils.safe_popen_read("xcrun", "swift", "--version")[/Swift version (\d+)/, 1].to_i
+    if swift_major < 6
+      odie "Desk Check needs Swift 6 or later to build, and this Mac has Swift #{swift_major}. " \
+           "Update the command line tools (version 16 or later, which needs macOS 14.5 or later) " \
+           "with `xcode-select --install` or in System Settings > General > Software Update, " \
+           "then run brew install again."
+    end
     system "scripts/build-app.sh", version.to_s, prefix
     pkgshare.install "Tests/verify-app.sh"
     # desk-check quits a copy left running by an older install, then opens this one; --version prints the version.
