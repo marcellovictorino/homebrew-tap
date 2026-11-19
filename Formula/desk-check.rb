@@ -10,8 +10,8 @@
 class DeskCheck < Formula
   desc "Menu bar posture coach that tells you how to move your screen and desk"
   homepage "https://github.com/marcellovictorino/desk-check"
-  url "https://github.com/marcellovictorino/desk-check/archive/refs/tags/v0.7.0.tar.gz"
-  sha256 "59e41e70408a3a76c900a2b67ba501742e7dd44241c1454a1970f160337a2c30"
+  url "https://github.com/marcellovictorino/desk-check/archive/refs/tags/v0.7.1.tar.gz"
+  sha256 "6a4f1d173ed3210466621ee2afce703b4d21444fecff86bf7e4237bee34baca7"
   license "MIT"
   head "https://github.com/marcellovictorino/desk-check.git", branch: "main"
 
